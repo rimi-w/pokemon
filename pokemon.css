@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.flex {
+    display: flex;
+}
+
+h2 {
+    font-weight: 700px;
+    margin: 10px 0;
+}
+
+p {
+    margin: 5px 0;
+}
+
+.container {
+    width: 400px;
+    margin: 50px auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#pokemon-container {
+    width: 350px;
+    margin: 30px auto;
+    padding: 30px;
+    border: none;
+    border-radius: 15px;
+    flex-direction: column;
+}
+
+#pokemon {
+    flex-direction: column;
+    align-items: center;
+}
+
+.buttons {
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.button {
+    width: 150px;
+    height: 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #0087a2bc;
+}
+
+.button:hover {
+    background-color: #005566bc;
+}
+
+#retry, #levelUp {
+    display: none;
+}
