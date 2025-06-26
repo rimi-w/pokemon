@@ -18,15 +18,17 @@ pick.addEventListener(`click`,() => {
     pick.style.display = `none`
     retry.style.display = `block`
 
-    levelUpPokemon(pokemonId);
+    hsaEvolution(pokemonId);
+    // levelUpPokemon(pokemonId);
 })
 
 retry.addEventListener(`click`, () => {
     deletePokemon();
-    let newPokemonId = Math.floor(Math.random() * 1000 + 1);
-    getPokemonData(newPokemonId);
+    let pokemonId = Math.floor(Math.random() * 1000 + 1);
+    getPokemonData(pokemonId);
 
-    levelUpPokemon(pokemonId);
+    hsaEvolution(pokemonId);
+    // levelUpPokemon(newPokemonId);
 })
 
 
@@ -64,14 +66,27 @@ async function getPokemonData(pokemonId) {
         pokemon.appendChild(statElement);
     }
 
-    const speciesUrl = data.species.url;
-    console.log(data);
-    console.log(speciesUrl)
 }
 
-async function levelUpPokemon(pokemonId) {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`);
-    const data = await response.json();
+async function hsaEvolution(pokemonId) {
+    const response1 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}/`);
+    const data1 = await response1.json();
+    const hasEvolutionUrl = data1.evolution_chain.url;
 
-    console.log(data);
+    const response2 = await fetch(`${hasEvolutionUrl}`);
+    const data2 = await response2.json(); 
+
+    if (data2.chain.evolves_to.length === 0) {
+        console.log(`진화를 할 수 없습니다.`);
+        levelUp.style.display = `none`;
+    } else {
+        const evolutionUrl = data2.chain.evolves_to[0].species.url;
+        console.log(evolutionUrl);
+        levelUp.style.display = `block`;
+        return evolutionUrl;
+    }
+
+    console.log(data2);
+    
 }
+
