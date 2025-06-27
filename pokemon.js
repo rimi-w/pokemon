@@ -3,7 +3,8 @@ const retry = document.getElementById(`retry`);
 const levelUp = document.getElementById(`levelUp`);
 const pokemon = document.getElementById(`pokemon`);
 const container = document.getElementById(`pokemon-container`);
-
+let evolvedPokemon = ``;
+let newPokemonId = ``;
 
 const deletePokemon = function () {
     if (pokemon.innerHTML !== ``) {
@@ -19,7 +20,6 @@ pick.addEventListener(`click`,() => {
     retry.style.display = `block`
 
     hsaEvolution(pokemonId);
-    // levelUpPokemon(pokemonId);
 })
 
 retry.addEventListener(`click`, () => {
@@ -28,9 +28,15 @@ retry.addEventListener(`click`, () => {
     getPokemonData(pokemonId);
 
     hsaEvolution(pokemonId);
-    // levelUpPokemon(newPokemonId);
 })
 
+levelUp.addEventListener(`click`,()=> {
+    deletePokemon();
+    getPokemonId(evolvedPokemon);
+    getPokemonData(newPokemonId);
+
+    hsaEvolution(newPokemonId);
+})
 
 async function getPokemonData(pokemonId) {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
@@ -72,21 +78,35 @@ async function hsaEvolution(pokemonId) {
     const response1 = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}/`);
     const data1 = await response1.json();
     const hasEvolutionUrl = data1.evolution_chain.url;
+    console.log(`pokemonId : `, data1);
 
     const response2 = await fetch(`${hasEvolutionUrl}`);
     const data2 = await response2.json(); 
+    console.log(`hasEvolutionUrl : `, data2);
 
-    if (data2.chain.evolves_to.length === 0) {
+    if (data2.chain.evolves_to.length === 0 || data1.name === data2.chain.evolves_to[0].species.name) {
         console.log(`진화를 할 수 없습니다.`);
         levelUp.style.display = `none`;
     } else {
-        const evolutionUrl = data2.chain.evolves_to[0].species.url;
-        console.log(evolutionUrl);
+        evolvedPokemon = data2.chain.evolves_to[0].species.url;
+        console.log(evolvedPokemon);
         levelUp.style.display = `block`;
-        return evolutionUrl;
+        return evolvedPokemon;
     }
-
-    console.log(data2);
-    
 }
 
+function getPokemonId(evolvedPokemon) {
+    const reversedString = evolvedPokemon.split("").reverse().join("");
+
+    let numbers = ``;
+    for (let i=1; i < reversedString.length; i++) {
+        if (/[0-9]/.test(reversedString[i])) {
+            numbers += reversedString[i];
+        } else {
+            break;
+        }
+    }
+    newPokemonId = numbers.split("").reverse().join("");
+    console.log(newPokemonId);
+    return newPokemonId;
+}
